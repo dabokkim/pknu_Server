@@ -1,0 +1,22 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom"> <!--네비게이션바 만들기-->
+    <!--홈 링크-->
+    <a class="navbar-brand" href="{% url 'pybo:index' %}">Pybo</a>
+    <!--토글 버튼--> <!--토글로 접혔다 펴졌다하는 기능(collapse) , button태그내부 속성은 디폴트한 값들(자주사용됨)-->
+    <button class="navbar-toggler ml-auto" type="button" data-toggle ="collapse"
+            data-target = "#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--로그인 링크-->
+    <div class="collapse navbar-collapse flex-grow-0" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                {% if user.is_authenticated %} <!--로그인이 되어있을때-->
+                <a class="nav-link" href="{% url 'common:logout' %}">{{ user.username }}님 환영합니다.(로그아웃)</a>
+                {% else %}
+                <a class="nav-link" href="{% url 'common:login' %}">로그인</a> <!--최상위로 가능 링크-->
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>

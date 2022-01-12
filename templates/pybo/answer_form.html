@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <form method ="post" class="post-form my-3">
+        {% csrf_token %}
+        {% include "form_errors.html" %}
+        <div class="form-group">
+            <label for="content">답변내용</label>
+            <textarea class="form-control" name="content" id="content" rows="10">
+                {{ form.content.value|default_if_none:''}}</textarea> <!--값이 없을때 none이 출력되는데 그것을 공백으로 처리하라-->
+        </div>
+<!--        {{ form.as_p }} &lt;!&ndash;폼객체(subject,content)를 p태그 안에 배치&ndash;&gt;-->
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}

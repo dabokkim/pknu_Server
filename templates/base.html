@@ -1,0 +1,30 @@
+{% load static %} <!-- static 폴더 로딩 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <mata name = "viewport" content = "width=device-width, initial-scale=1, shrink-to-fit=no"></mata>
+    <title>Hello 2020</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"> <!--부트스트랩 : 웹페이지 스타일의 정형화된 스타일을 가져올수 있는 프레임워크-->
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+<body>
+{% include "navbar.html" %} <!-- navbar.html파일을 불러옴 -->
+
+<!--기본 템플릿 안에 삽입될 내용 시작-->
+{% block content %}
+{% endblock %}
+<!--기본 템플릿 안에 삽입될 내용 끝-->
+
+<!-- jQuery JS -->
+<script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+<!-- Bootstrap JS -->
+<script src="{% static 'bootstrap.min.js' %}"></script>
+
+<!-- 자바스크립트 start-->
+{% block script %}
+{% endblock %}
+<!--자바스크립트 end-->
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+{% extends 'base.html' %} <!-- base.html을 상속을 받음 -->
+{% load pybo_filter %}
+{% block content %} <!--base.html의 block content부분에 삽입, 템플릿 태그 -->
+
+<div class="container my-3">
+
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+            <strong>{{ message.tags }}</strong>
+            <ul><li>{{ message.message }}</li></ul>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <div class="card my-3"> <!--card : 박스 쳐주는 스타일-->
+        <div class="card-body">
+            <div class="card-text" style="while-space : pre-line;"> <!--질문할 때 markdown 적용-->
+                {{ question.content|mark }}
+            </div>
+            <div class="d-flex justify-content-end"> <!--오른쪽 아래에 생성-->
+
+                {% if question.modify_date %}
+                <div class="badge badge-light p-2 text-left mx-3"> <!--색상설정, 패딩 전방향 2px-->
+                    <div class="mb-2"> modified at </div>
+                    <div>{{ question.modify_date }}</div>
+                </div>
+                {% endif %}
+
+                    <div class="badge badge-light p-2 text-left"> <!--색상설정, 패딩 전방향 2px-->
+                        <div>{{ question.author.username }}</div>
+                        <div>{{ question.create_date }}</div>
+                    </div>
+            </div>
+            {% if request.user == question.author %}
+            <div class="my-3">
+                <a href="{% url 'pybo:question_modify' question.id %}"
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+                <a href = "#"
+                   class = "delete btn btn-sm btn-outline-secondary"
+                   data-uri = "{% url 'pybo:question_delete' question.id %}">삭제</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <h5 class="border-bottom my-3 py-2"> {{ question.answer_set.count }}개의 답변이 있습니다. </h5> <!-- 답변 갯수 -->
+    {% for answer in question.answer_set.all %} <!-- 답변한 내용을 전부 반복해서 가져옴 -->
+        <div class="card my-3">
+            <div class="card-body">
+                <div class="card-text" style="while-space : pre-line;">
+                    {{ answer.content|mark }} <!-- 답변내용 출력 -->
+                </div>
+                {% if request.user == answer.author %}
+                <div class="my-3">
+                    <a href="{% url 'pybo:answer_modify' answer.id %}"
+                       class="btn btn-sm btn-outline-secondary">수정</a>
+                    <a href = "#"
+                   class = "delete btn btn-sm btn-outline-secondary"
+                   data-uri = "{% url 'pybo:answer_delete' answer.id %}">삭제</a>
+                </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-end"> <!--오른쪽 아래에 생성-->
+
+                    {% if answer.modify_date %}
+                    <div class="badge badge-light p-2 text-left mx-3"> <!--색상설정, 패딩 전방향 2px-->
+                        <div class="mb-2"> modified at </div>
+                        <div>{{ answer.modify_date }}</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="badge badge-light p-2 text-left"> <!--색상설정, 패딩 전방향 2px-->
+                        <div>{{ answer.author.username }}</div>
+                        <div>{{ answer.create }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <form action="{% url 'pybo:answer_create' question.id %}" method="post" class="my-3" >  <!-- 답변 구현 -->
+        {% csrf_token %} <!-- 장고에서 제공하는 보안기능(form태그 사용시 사용 , 보안키) -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                <strong>{{ field.label }}</strong>
+                {{ field.errors }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+
+        <div class="form-group"> <!-- 로그아웃 상태면 입력창 막음-->
+            <textarea {% if not user.is_authenticated %} disabled {% endif%}
+                    name = "content" id="content" rows="15" class="form-control"></textarea>
+        </div>
+        <input type="submit" value="답변등록" class="btn btn-primary">
+    </form>
+</div>
+{% endblock %}
+
+<!-- 스크립트 코드 -->
+{% block script %}
+<script type = "text/javascript">
+    $(document).ready(function(){
+        $(".delete").on('click', function(){
+            if(confirm("정말로 삭제하시겠습니까?")){
+                location.href = $(this).data('uri');
+            }
+        });
+    });
+</script>
+
+{% endblock %}
